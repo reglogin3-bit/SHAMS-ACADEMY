@@ -842,6 +842,14 @@
 <div class="toast" id="toast"><span class="dot"></span><span id="toastText">Saqlandi</span></div>
 
 <script>
+/* ==================================================================
+   TELEGRAM SOZLAMALARI
+   Quyidagi ikki qatorni o'zingizning bot va chat ID'ingizga almashtiring.
+   Qanday olish kerakligi — javobdagi qo'llanmaga qarang.
+   ================================================================== */
+const TELEGRAM_BOT_TOKEN = '8505536567:AAF7KaTGvrnrB-yau1PVvcEp1_lbD8BaqXk';   // @BotFather'dan olingan token
+const TELEGRAM_CHAT_ID   = 'BU_YERGA_CHAT_ID_NI_QOYING';     // guruh yoki shaxsiy chat ID
+
 /* ---------------- DATA ---------------- */
 const courses = [
   {id:'eng', tag:'Til kursi', name:'Ingliz tili', desc:'Boshlang\'ich darajadan IELTSgacha, kichik guruhlarda amaliy mashg\'ulotlar.', price:'350 000', dur:'oyiga · 3 kun/hafta'},
@@ -1001,6 +1009,33 @@ async function saveBookings(list){
   }
 }
 
+/* ---------------- TELEGRAM NOTIFICATION ---------------- */
+function escMd(s){
+  // Ism-familiyada tasodifan _ * ` [ belgisi bo'lsa ham Telegram xabari buzilmasin uchun
+  return String(s).replace(/([_*`\[])/g, '\\$1');
+}
+async function sendToTelegram(entry){
+  if(!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.indexOf('BU_YERGA') === 0) return false;
+  const text =
+    '🆕 *Yangi bron so\'rovi — Shams Academy*\n\n' +
+    '👤 Ota-ona: ' + escMd(entry.parentName) + '\n' +
+    '👶 Farzand: ' + escMd(entry.childName) + ' (' + escMd(entry.childAge) + ' yosh)\n' +
+    '📚 Kurs: ' + escMd(entry.course) + '\n' +
+    '📞 Tel: ' + escMd(entry.phone) + '\n' +
+    '🕐 ' + new Date(entry.createdAt).toLocaleString('uz-UZ');
+  try{
+    const res = await fetch('https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: text, parse_mode: 'Markdown'})
+    });
+    return res.ok;
+  }catch(err){
+    console.error('Telegram xabar yuborishda xatolik:', err);
+    return false;
+  }
+}
+
 document.getElementById('bookingForm').addEventListener('submit', async function(e){
   e.preventDefault();
   const courseId = document.getElementById('courseSelect').value;
@@ -1015,14 +1050,23 @@ document.getElementById('bookingForm').addEventListener('submit', async function
     createdAt: new Date().toISOString(),
     status: 'new'
   };
-  const list = await getBookings();
-  list.unshift(entry);
-  const ok = await saveBookings(list);
-  if(ok){
+
+  const telegramOk = await sendToTelegram(entry);
+
+  // Zaxira sifatida — Claude ichida ko'rganingizda admin panelda ham chiqib turadi.
+  // Sayt sifatida joylashtirilganda bu qism sokin o'tkazib yuboriladi, asosiysi — Telegram.
+  let storageOk = false;
+  try{
+    const list = await getBookings();
+    list.unshift(entry);
+    storageOk = await saveBookings(list);
+  }catch(err){ /* window.storage mavjud bo'lmasligi mumkin — bu normal holat */ }
+
+  if(telegramOk || storageOk){
     showToast('So\'rovingiz yuborildi — tez orada bog\'lanamiz');
     this.reset();
   }else{
-    showToast('Xatolik yuz berdi, qayta urinib ko\'ring');
+    showToast('Xatolik yuz berdi, qayta urinib ko\'ring yoki qo\'ng\'iroq qiling');
   }
 });
 
