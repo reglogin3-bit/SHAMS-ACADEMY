@@ -390,7 +390,7 @@
     border:1px solid var(--line);
     border-radius:50%;
     background:transparent;
-    color:var(--blue);
+    color:#000000;
     cursor:pointer;
     display:flex;
     align-items:center;
@@ -489,7 +489,7 @@
     background:#0d0b24;
   }
   html[data-theme="dark"] #themeToggle{
-    color:var(--accent);
+    color:#ffffff !important;
   }
   html[data-theme="dark"] #themeToggle .theme-sun{display:none;}
   html[data-theme="dark"] #themeToggle .theme-moon{display:block;}
@@ -531,13 +531,18 @@
   .courses-category-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; width:100%;}
   .level-prices{display:flex; flex-direction:column; gap:7px; margin:2px 0 18px;}
   .level-price{
-    display:flex; justify-content:space-between; align-items:center;
+    display:flex; flex-direction:column; gap:2px;
     background:var(--sky-light); border:1px solid var(--line);
     border-radius:9px; padding:7px 10px; font-size:12.5px;
   }
+  .level-price-row{display:flex; justify-content:space-between; align-items:center; width:100%;}
   .level-price span{color:var(--slate); font-weight:600;}
   .level-price strong{color:var(--blue); font-size:12px;}
   .level-price small{font-weight:500; color:var(--slate);}
+  .level-teacher{font-size:11px; color:var(--slate); font-weight:500;}
+  .level-teacher b{color:var(--navy); font-weight:600;}
+  .course-teacher{font-size:12.5px; color:var(--slate); margin:-4px 0 12px; font-weight:500;}
+  .course-teacher b{color:var(--navy); font-weight:600;}
   .course-book-full{width:100%; margin-top:auto;}
   @media (max-width:900px){.courses-category-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.course-card{padding:22px;}}
   @media (max-width:560px){.courses-category-grid{grid-template-columns:1fr;}.course-card{padding:20px;}.course-category-title{font-size:20px;}.course-price{font-size:20px;}.course-meta{gap:12px;align-items:center;}.course-book{white-space:nowrap;}}
@@ -586,12 +591,12 @@
     position:relative !important;
     z-index:999 !important;
     width:40px;height:40px;border:1px solid var(--line);
-    border-radius:50%;background:transparent;color:var(--blue);
+    border-radius:50%;background:transparent;color:#000000 !important;
     cursor:pointer;display:flex;align-items:center;justify-content:center;
   }
   #themeToggle .theme-sun{width:20px;height:20px;}
   #themeToggle .theme-moon{display:none;width:20px;height:20px;}
-  html[data-theme="dark"] #themeToggle{color:var(--accent);}
+  html[data-theme="dark"] #themeToggle{color:#ffffff !important;}
   html[data-theme="dark"] #themeToggle .theme-sun{display:none;}
   html[data-theme="dark"] #themeToggle .theme-moon{display:block;}
 </style>
@@ -838,23 +843,29 @@ const TELEGRAM_CHAT_ID   = '-5381489177';     // guruh yoki shaxsiy chat ID
 /* ---------------- DATA ---------------- */
 const courses = [
   {id:'eng', category:'Til kurslari', tag:'Ingliz tili', name:'Ingliz tili', desc:'Darajalar bo‘yicha o‘qitiladi.', levels:[
-    ['Starter','300 000'],['A1','300 000'],['A2','320 000'],['B1','330 000'],['B2','360 000'],['CEFR','400 000']
+    ['Starter','300 000','Husenova Mohinur'],
+    ['A1','300 000','Husenova Mohinur'],
+    ['A2','320 000','Nasriddinov Humoyun'],
+    ['B1','330 000','Nasriddinov Humoyun'],
+    ['B2','360 000','Nasriddinov Humoyun'],
+    ['CEFR / IELTS','400 000','Nasriddinov Humoyun']
   ]},
-  {id:'rus', category:'Til kurslari', tag:'Rus tili', name:'Rus tili', desc:'Rus tili kursi.', price:'330 000', dur:'oyiga'},
-  {id:'computer', category:'Texnologiya', tag:'Kompyuter', name:'Kompyuter', desc:'Kompyuter savodxonligi kursi.', price:'350 000', dur:'oyiga'},
-  {id:'it', category:'Texnologiya', tag:'IT', name:'IT kursi', desc:'IT va dasturlash yo‘nalishi.', price:'380 000', dur:'oyiga'},
-  {id:'robo', category:'Texnologiya', tag:'Robototexnika', name:'Robototexnika', desc:'Robototexnika kursi.', price:'400 000', dur:'oyiga'},
-  {id:'math', category:'Aniq fanlar', tag:'Matematika', name:'Matematika', desc:'Matematika kursi.', price:'400 000', dur:'oyiga'},
+  {id:'rus', category:'Til kurslari', tag:'Rus tili', name:'Rus tili', desc:'Rus tili kursi.', price:'330 000', dur:'oyiga', teacher:'Ahtamova Malika'},
+  {id:'computer', category:'Texnologiya', tag:'Kompyuter', name:'Kompyuter', desc:'Kompyuter savodxonligi kursi.', price:'350 000', dur:'oyiga', teacher:'Ahtamov Eraj'},
+  {id:'it', category:'Texnologiya', tag:'IT', name:'IT kursi', desc:'IT va dasturlash yo‘nalishi.', price:'380 000', dur:'oyiga', teacher:'Mustafoyev Fazliddin, Ahtamov Eraj, Sattarov Sardor'},
+  {id:'robo', category:'Texnologiya', tag:'Robototexnika', name:'Robototexnika', desc:'Robototexnika kursi.', price:'400 000', dur:'oyiga', teacher:'Dilshod Bahriddinov'},
+  {id:'math', category:'Aniq fanlar', tag:'Matematika', name:'Matematika', desc:'Matematika kursi.', price:'400 000', dur:'oyiga', teacher:'Avazxon Nuriddinov'},
 ];
 
 const teachers = [
-  {name:'Nasriddinov Humoyun', subj:'Ingliz tili o‘qituvchisi', age:27, exp:'3 yil tajriba', cert:'IELTS 7.5 sertifikati'},
-  {name:'Ahtamov Eraj', subj:'Kompyuter ustasi', age:26, exp:'2 yil tajriba'},
+  {name:'Avazxon Nuriddinov', subj:'Matematika o‘qituvchisi', age:23, exp:'2 yil tajriba', cert:'A+ matematika xalqaro sertifikat'},
+  {name:'Husenova Mohinur', subj:'Ingliz tili (Starter, A1)', age:28, exp:'4 yil tajriba', cert:'IELTS 6.5 sertifikati'},
+  {name:'Nasriddinov Humoyun', subj:'Ingliz tili (A2, B1, B2, CEFR/IELTS)', age:27, exp:'3 yil tajriba', cert:'IELTS 7.5 sertifikati'},
+  {name:'Ahtamova Malika', subj:'Rus tili o‘qituvchisi', age:27, exp:'4 yil tajriba', cert:'C1 daraja xalqaro sertifikat'},
+  {name:'Ahtamov Eraj', subj:'Kompyuter savodxonligi / IT o‘qituvchisi', age:26, exp:'2 yil tajriba'},
+  {name:'Mustafoyev Fazliddin', subj:'IT o‘qituvchisi (Senior)', exp:'4 yil tajriba', cert:'Najot Ta’lim sertifikati', company:'Ruthardt Softwaretechnik GmbH kompaniyasida dasturchi'},
   {name:'Sattarov Sardor', subj:'IT o‘qituvchisi', age:23, exp:'3 yil tajriba'},
   {name:'Dilshod Bahriddinov', subj:'Robototexnika o‘qituvchisi', age:26, exp:'6 yil tajriba'},
-  {name:'Ahtamova Malika', subj:'Rus tili o‘qituvchisi', age:27, exp:'4 yil tajriba', cert:'C1 daraja xalqaro sertifikat'},
-  {name:'Mustafoyev Fazliddin', subj:'Senior IT teacher', exp:'4 yil tajriba', cert:'Najot Ta’lim sertifikati', company:'Ruthardt Softwaretechnik GmbH kompaniyasida dasturchi'},
-  {name:'Husenova Mohinur', subj:'Ingliz tili o‘qituvchisi', age:28, exp:'4 yil tajriba', cert:'IELTS 6.5 sertifikati'},
 ];
 
 const graduates = [
@@ -900,11 +911,15 @@ function renderCourses(){
             <p class="desc">${c.desc}</p>
             ${c.levels ? `
               <div class="level-prices">
-                ${c.levels.map(([level,price]) => `
-                  <div class="level-price"><span>${level}</span><strong>${price} <small>so‘m</small></strong></div>
+                ${c.levels.map(([level,price,teacher]) => `
+                  <div class="level-price">
+                    <div class="level-price-row"><span>${level}</span><strong>${price} <small>so‘m</small></strong></div>
+                    ${teacher ? `<div class="level-teacher">O‘qituvchi: <b>${teacher}</b></div>` : ''}
+                  </div>
                 `).join('')}
               </div>
             ` : `
+              ${c.teacher ? `<div class="course-teacher">O‘qituvchi: <b>${c.teacher}</b></div>` : ''}
               <div class="course-meta">
                 <div class="course-price">${c.price} <span>so‘m / ${c.dur}</span></div>
                 <button class="course-book" onclick="preselectCourse('${c.id}')">Kursni bron qilish</button>
